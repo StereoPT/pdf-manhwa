@@ -1,0 +1,26 @@
+{
+  "name": "pdf-manhwa",
+  "version": "1.0.0",
+  "description": "Manhwa to PDF",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StereoPT/pdf-manhwa.git"
+  },
+  "author": "StereoPT",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/StereoPT/pdf-manhwa/issues"
+  },
+  "homepage": "https://github.com/StereoPT/pdf-manhwa#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "axios": "^0.21.0"
+  }
+}
