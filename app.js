@@ -24,7 +24,7 @@ async function GetChapter(URL) {
   }
 
   try {
-    parserMap.get(host).parse(axios, cheerio, html);
+    parserMap.get(host).parse(cheerio, html, URL);
   } catch(error) {
     console.error(error);
   }
