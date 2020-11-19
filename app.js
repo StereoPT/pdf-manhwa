@@ -1,6 +1,5 @@
 const readLine = require('readline-sync');
 const axios = require('axios');
-const cheerio = require('cheerio');
 
 const parserMap = new Map();
 const manhwaParsers = require('./parsers');
@@ -24,7 +23,7 @@ async function GetChapter(URL) {
   }
 
   try {
-    parserMap.get(host).parse(cheerio, html, URL);
+    parserMap.get(host).getChapter(URL, html);
   } catch(error) {
     console.error(error);
   }
