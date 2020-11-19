@@ -9,31 +9,20 @@ const wait = require('waait');
 
 async function scrapeChapter(chapterUrl, html) {
   const chapterDoc = new PDFDocument({ autoFirstPage: false });
-  let imagesPath = [];
 
   let $ = cheerio.load(html);
-  const mangaTitle = $('meta[name="twitter:title"]').attr('content').split(' ').join('_');
-  let nextPage, searchNextPage;
+  const mangaTitle = $('#chapter-heading').text().replace('\'', '').split(' ').join('_');
+  let nextPage = $('.next_page').first().attr('href');
 
-  do {
-    nextPage = $('.next_page').first().attr('href');
-    console.log(` > Next Part: ${nextPage}`);
-    searchNextPage = nextPage.split('?')[0];
+  const imagesPath = await scrapeChapterPart($, mangaTitle);
 
-    const chapterPartImagePaths = await scrapeChapterPart($, mangaTitle);
-    imagesPath = imagesPath.concat(chapterPartImagePaths);
-  
-    const { data: html } = await axios.get(nextPage);
-    $ = cheerio.load(html);
-    await wait(500);
-  } while(chapterUrl.search(searchNextPage) != -1);
-
-  chapterDoc.pipe(fs.createWriteStream(path.join(__dirname, '..', `${chapterUrl.split('/').pop()}.pdf`)));
+  chapterDoc.pipe(fs.createWriteStream(path.join(__dirname, '..', `${mangaTitle}.pdf`)));
   
   for(let image of imagesPath) {
     let pdfImage = chapterDoc.openImage(image);
     chapterDoc.addPage({ size: [ pdfImage.width, pdfImage.height ] });
     chapterDoc.image(pdfImage, 0, 0);
+    await wait(100);
   }
 
   chapterDoc.end();
@@ -53,8 +42,8 @@ async function scrapeChapterPart($, mangaTitle) {
   const imageObject = $('.wp-manga-chapter-img');
 
   imageObject.each(async function(index, img) {
-    const imgSrc = img.attribs.src;
-    const imgPadding = img.attribs['data-image-paged'];
+    const imgSrc = img.attribs['data-src'].trim();
+    const imgPadding = img.attribs.id;
     const imgName = mangaTitle + "-" + imgPadding + ".png";
     const imgPath = path.join(__dirname, '..', 'images', imgName);
 
@@ -69,12 +58,12 @@ async function scrapeChapterPart($, mangaTitle) {
 }
 
 module.exports = {
-  name: 'Mangazuki',
-  host: 'mangazuki.me',
-  url: 'https://mangazuki.me/',
+  name: 'Toonily',
+  host: 'toonily.com',
+  url: 'https://toonily.com/',
   async getChapter(chapterUrl, html) {
     await scrapeChapter(chapterUrl, html);
   }
 }
 
-// https://mangazuki.me/manga/unwanted-roommate-manga-funch-online/unwanted-roommate-1
+// https://toonily.com/webtoon/solmis-channel/chapter-1/
