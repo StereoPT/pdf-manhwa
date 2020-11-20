@@ -1,14 +1,10 @@
-const fs = require('fs');
-const readLine = require('readline-sync');
-const axios = require('axios');
 const cheerio = require('cheerio');
 const path = require('path');
-const { downloadImage } = require('../lib/imageHelper');
-const PDFDocument = require('pdfkit');
+const { getHtml, downloadImage, getNextChapter } = require('../lib/scraperHelper');
+const { generatePDF } = require('../lib/pdfHelper');
 const wait = require('waait');
 
 async function scrapeChapter(chapterUrl, html) {
-  const chapterDoc = new PDFDocument({ autoFirstPage: false });
   let imagesPath = [];
 
   let $ = cheerio.load(html);
@@ -23,27 +19,20 @@ async function scrapeChapter(chapterUrl, html) {
     const chapterPartImagePaths = await scrapeChapterPart($, mangaTitle);
     imagesPath = imagesPath.concat(chapterPartImagePaths);
   
-    const { data: html } = await axios.get(nextPage);
+    const html = await getHtml(nextPage);
     $ = cheerio.load(html);
     await wait(500);
   } while(chapterUrl.search(searchNextPage) != -1);
 
-  chapterDoc.pipe(fs.createWriteStream(path.join(__dirname, '..', `${chapterUrl.split('/').pop()}.pdf`)));
-  
-  for(let image of imagesPath) {
-    let pdfImage = chapterDoc.openImage(image);
-    chapterDoc.addPage({ size: [ pdfImage.width, pdfImage.height ] });
-    chapterDoc.image(pdfImage, 0, 0);
-  }
+  const pdfName = chapterUrl.split('/').pop();
+  await generatePDF(pdfName, imagesPath);
+  await wait(250);
 
-  chapterDoc.end();
-
-  const nextChapter = readLine.question('Download Next Chapter [Y/N]: ').toUpperCase();
-  if(nextChapter == 'Y') {
+  getNextChapter(async () => {
     console.log(` > Next Chapter: ${nextPage}`);
-    const { data: html } = await axios.get(nextPage);
+    const html = await getHtml(nextPage);
     scrapeChapter(nextPage, html);
-  }
+  });  
 }
 
 async function scrapeChapterPart($, mangaTitle) {
@@ -52,7 +41,7 @@ async function scrapeChapterPart($, mangaTitle) {
 
   const imageObject = $('.wp-manga-chapter-img');
 
-  imageObject.each(async function(index, img) {
+  imageObject.each(function(index, img) {
     const imgSrc = img.attribs.src;
     const imgPadding = img.attribs['data-image-paged'];
     const imgName = mangaTitle + "-" + imgPadding + ".png";
@@ -72,7 +61,8 @@ module.exports = {
   name: 'Mangazuki',
   host: 'mangazuki.me',
   url: 'https://mangazuki.me/',
-  async getChapter(chapterUrl, html) {
+  async getChapter(chapterUrl) {
+    const html = await getHtml(chapterUrl);
     await scrapeChapter(chapterUrl, html);
   }
 }

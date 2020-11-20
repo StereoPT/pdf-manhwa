@@ -12,9 +12,8 @@ Object.keys(manhwaParsers).map((key) => {
 
 console.log('[PDF Manhwa]');
 
-async function GetChapter(URL) {
-  const { request, data: html } = await axios.get(URL);
-  const { host } = request;
+async function GetChapter(chapterUrl) {
+  const host = new URL(chapterUrl).hostname;
 
   // ToLowerCase (maybe?)
   if(!parserMap.has(host)) {
@@ -23,7 +22,7 @@ async function GetChapter(URL) {
   }
 
   try {
-    parserMap.get(host).getChapter(URL, html);
+    parserMap.get(host).getChapter(chapterUrl);
   } catch(error) {
     console.error(error);
   }

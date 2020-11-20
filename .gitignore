@@ -89,3 +89,6 @@ typings/
 
 # Images
 images/
+
+# PDF's
+*.pdf

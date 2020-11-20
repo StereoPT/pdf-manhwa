@@ -1,38 +1,24 @@
-const fs = require('fs');
-const readLine = require('readline-sync');
-const axios = require('axios');
 const cheerio = require('cheerio');
 const path = require('path');
-const { downloadImage } = require('../lib/imageHelper');
-const PDFDocument = require('pdfkit');
+const { getHtml, downloadImage, getNextChapter } = require('../lib/scraperHelper');
+const { generatePDF } = require('../lib/pdfHelper');
 const wait = require('waait');
 
 async function scrapeChapter(chapterUrl, html) {
-  const chapterDoc = new PDFDocument({ autoFirstPage: false });
-
   let $ = cheerio.load(html);
   const mangaTitle = $('#chapter-heading').text().replace('\'', '').split(' ').join('_');
   let nextPage = $('.next_page').first().attr('href');
 
   const imagesPath = await scrapeChapterPart($, mangaTitle);
 
-  chapterDoc.pipe(fs.createWriteStream(path.join(__dirname, '..', `${mangaTitle}.pdf`)));
-  
-  for(let image of imagesPath) {
-    let pdfImage = chapterDoc.openImage(image);
-    chapterDoc.addPage({ size: [ pdfImage.width, pdfImage.height ] });
-    chapterDoc.image(pdfImage, 0, 0);
-    await wait(100);
-  }
+  await generatePDF(mangaTitle, imagesPath);
+  await wait(250);
 
-  chapterDoc.end();
-
-  const nextChapter = readLine.question('Download Next Chapter [Y/N]: ').toUpperCase();
-  if(nextChapter == 'Y') {
+  getNextChapter(async () => {
     console.log(` > Next Chapter: ${nextPage}`);
-    const { data: html } = await axios.get(nextPage);
+    const html = await getHtml(nextPage);
     scrapeChapter(nextPage, html);
-  }
+  });
 }
 
 async function scrapeChapterPart($, mangaTitle) {
@@ -41,7 +27,7 @@ async function scrapeChapterPart($, mangaTitle) {
 
   const imageObject = $('.wp-manga-chapter-img');
 
-  imageObject.each(async function(index, img) {
+  imageObject.each(function(index, img) {
     const imgSrc = img.attribs['data-src'].trim();
     const imgPadding = img.attribs.id;
     const imgName = mangaTitle + "-" + imgPadding + ".png";
@@ -61,9 +47,10 @@ module.exports = {
   name: 'Toonily',
   host: 'toonily.com',
   url: 'https://toonily.com/',
-  async getChapter(chapterUrl, html) {
+  async getChapter(chapterUrl) {
+    const html = await getHtml(chapterUrl);
     await scrapeChapter(chapterUrl, html);
   }
 }
 
-// https://toonily.com/webtoon/solmis-channel/chapter-1/
+// https://toonily.com/webtoon/solmis-channel/chapter-4/
