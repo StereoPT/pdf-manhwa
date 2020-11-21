@@ -2,11 +2,12 @@
   "name": "pdf-manhwa",
   "version": "1.0.0",
   "description": "Manhwa to PDF",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node app.js",
-    "debug": "node app.js --debug",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "debug": "node src/app.js --debug",
+    "dev": "nodemon src/app.js",
+    "lint": "eslint src/"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,9 @@
   },
   "homepage": "https://github.com/StereoPT/pdf-manhwa#readme",
   "devDependencies": {
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
     "nodemon": "^2.0.6"
   },
   "dependencies": {

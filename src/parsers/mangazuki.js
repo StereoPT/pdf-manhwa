@@ -1,21 +1,21 @@
 const ora = require('ora');
 const path = require('path');
-const wait = require('waait');
 const cheerio = require('cheerio');
 const { generatePDF } = require('../lib/pdfHelper');
 const { getHtml, downloadImage, getNextChapter } = require('../lib/scraperHelper');
 
 async function scrapeChapter(chapterUrl, html) {
   let imagesPath = [];
-
+  
   let $ = cheerio.load(html);
   const mangaTitle = $('meta[name="twitter:title"]').attr('content').split(' ').join('_');
-  console.log(` > Chapter: ${mangaTitle}`);
   let nextPage, searchNextPage;
+  
+  console.log(` > Chapter: ${mangaTitle}`);
+  const spinner = ora('Downloading...').start();
 
   do {
     nextPage = $('.next_page').first().attr('href');
-    console.log(` > Next Part: ${nextPage}`);
     searchNextPage = nextPage.split('?')[0];
 
     const chapterPartImagePaths = await scrapeChapterPart($, mangaTitle);
@@ -23,15 +23,14 @@ async function scrapeChapter(chapterUrl, html) {
   
     const html = await getHtml(nextPage);
     $ = cheerio.load(html);
-    await wait(500);
   } while(chapterUrl.search(searchNextPage) != -1);
+  spinner.succeed("Downloaded!");
 
   const pdfName = chapterUrl.split('/').pop();
   await generatePDF(pdfName, imagesPath);
-  await wait(250);
 
   getNextChapter(async () => {
-    console.log(` > Next Chapter: ${nextPage}`);
+    spinner.stopAndPersist();
     const html = await getHtml(nextPage);
     scrapeChapter(nextPage, html);
   });  
@@ -47,15 +46,13 @@ async function scrapeChapterPart($, mangaTitle) {
     const imgSrc = img.attribs.src;
     const imgPadding = img.attribs['data-image-paged'];
     const imgName = mangaTitle + "-" + imgPadding + ".png";
-    const imgPath = path.join(__dirname, '..', 'images', imgName);
+    const imgPath = path.join(__dirname, '..', '..', 'images', imgName);
 
     imagesPath.push(imgPath);
     imagePromises.push(downloadImage(imgSrc, imgPath));
-    console.log(` > Downloading: ${imgName}`);
   });
 
-  await Promise.all(imagePromises);
-  await wait(500);
+  await Promise.all(imagePromises);  
 
   return imagesPath;
 }
