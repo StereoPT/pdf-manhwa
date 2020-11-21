@@ -41,7 +41,7 @@ async function scrapeChapterPart($, mangaTitle, spinner) {
 
   await Promise.all(imagePromises);
   spinner.succeed("Downloaded!");
-
+  
   return imagesPath;
 }
 
@@ -55,4 +55,4 @@ module.exports = {
   }
 }
 
-// https://toonily.com/webtoon/solmis-channel/chapter-9/
+// https://toonily.com/webtoon/solmis-channel/chapter-12/
