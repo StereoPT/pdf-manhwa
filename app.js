@@ -1,5 +1,4 @@
 const readLine = require('readline-sync');
-const axios = require('axios');
 
 const parserMap = new Map();
 const manhwaParsers = require('./parsers');
@@ -28,5 +27,5 @@ async function GetChapter(chapterUrl) {
   }
 }
 
-const chapterUrl = readLine.question('Enter Chapter Url: ');
+let chapterUrl = readLine.question('Enter Chapter Url: ');
 GetChapter(chapterUrl);

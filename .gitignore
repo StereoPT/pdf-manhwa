@@ -91,4 +91,4 @@ typings/
 images/
 
 # PDF's
-*.pdf
+pdfs/

@@ -1,27 +1,29 @@
-const cheerio = require('cheerio');
+const ora = require('ora');
 const path = require('path');
-const { getHtml, downloadImage, getNextChapter } = require('../lib/scraperHelper');
+const cheerio = require('cheerio');
 const { generatePDF } = require('../lib/pdfHelper');
-const wait = require('waait');
+const { getHtml, downloadImage, getNextChapter } = require('../lib/scraperHelper');
 
 async function scrapeChapter(chapterUrl, html) {
   let $ = cheerio.load(html);
   const mangaTitle = $('#chapter-heading').text().replace('\'', '').split(' ').join('_');
   let nextPage = $('.next_page').first().attr('href');
 
-  const imagesPath = await scrapeChapterPart($, mangaTitle);
+  console.log(` > Chapter: ${mangaTitle}`);
+  const spinner = ora('Downloading...').start();
+
+  const imagesPath = await scrapeChapterPart($, mangaTitle, spinner);
 
   await generatePDF(mangaTitle, imagesPath);
-  await wait(250);
 
   getNextChapter(async () => {
-    console.log(` > Next Chapter: ${nextPage}`);
+    spinner.stopAndPersist();
     const html = await getHtml(nextPage);
     scrapeChapter(nextPage, html);
   });
 }
 
-async function scrapeChapterPart($, mangaTitle) {
+async function scrapeChapterPart($, mangaTitle, spinner) {
   let imagePromises = [];
   let imagesPath = [];
 
@@ -38,7 +40,7 @@ async function scrapeChapterPart($, mangaTitle) {
   });
 
   await Promise.all(imagePromises);
-  await wait(500);
+  spinner.succeed("Downloaded!");
 
   return imagesPath;
 }
@@ -53,4 +55,4 @@ module.exports = {
   }
 }
 
-// https://toonily.com/webtoon/solmis-channel/chapter-4/
+// https://toonily.com/webtoon/solmis-channel/chapter-9/

@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "debug": "node app.js --debug",
     "dev": "nodemon app.js"
   },
   "repository": {
@@ -24,6 +25,7 @@
     "axios": "^0.21.0",
     "cheerio": "^1.0.0-rc.3",
     "image-size": "^0.9.3",
+    "ora": "^5.1.0",
     "pdfkit": "^0.11.0",
     "readline-sync": "^1.4.10",
     "waait": "^1.0.5"
