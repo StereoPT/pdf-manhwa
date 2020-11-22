@@ -22,7 +22,15 @@ async function downloadImage(imgSrc, imgPath) {
   });
 }
 
+async function removeImages(imagesPath) {
+  // eslint-disable-next-line no-restricted-syntax
+  for(const image of imagesPath) {
+    fs.unlinkSync(image);
+  }
+}
+
 function getNextChapter(callback) {
+  console.log('');
   const nextChapter = readLine.question('Download Next Chapter [Y/N]: ').toUpperCase();
   if(nextChapter === 'Y') {
     return callback();
@@ -34,5 +42,6 @@ function getNextChapter(callback) {
 module.exports = {
   getHtml,
   downloadImage,
+  removeImages,
   getNextChapter,
 };

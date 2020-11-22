@@ -31,7 +31,6 @@
     "image-size": "^0.9.3",
     "ora": "^5.1.0",
     "pdfkit": "^0.11.0",
-    "readline-sync": "^1.4.10",
-    "waait": "^1.0.5"
+    "readline-sync": "^1.4.10"
   }
 }

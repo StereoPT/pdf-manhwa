@@ -2,7 +2,9 @@ const ora = require('ora');
 const path = require('path');
 const cheerio = require('cheerio');
 const { generatePDF } = require('../lib/pdfHelper');
-const { getHtml, downloadImage, getNextChapter } = require('../lib/scraperHelper');
+const {
+  getHtml, downloadImage, removeImages, getNextChapter,
+} = require('../lib/scraperHelper');
 
 async function scrapeChapterPart($, mangaTitle) {
   const imagePromises = [];
@@ -34,8 +36,8 @@ async function scrapeChapter(chapterUrl, html) {
   let searchNextPage;
 
   console.log(` > Chapter: ${mangaTitle}`);
-  const spinner = ora('Downloading...').start();
 
+  const downloadingSpinner = ora('Downloading...').start();
   do {
     nextPage = $('.next_page').first().attr('href');
     // eslint-disable-next-line prefer-destructuring
@@ -47,13 +49,16 @@ async function scrapeChapter(chapterUrl, html) {
     const nextPartHtml = await getHtml(nextPage);
     $ = cheerio.load(nextPartHtml);
   } while(chapterUrl.search(searchNextPage) !== -1);
-  spinner.succeed('Downloaded!');
+  downloadingSpinner.succeed('Downloaded!');
 
+  const generatingSpinner = ora('Generating...').start();
   const pdfName = chapterUrl.split('/').pop();
   await generatePDF(pdfName, imagesPath);
+  generatingSpinner.succeed('Generated!');
+
+  await removeImages(imagesPath);
 
   getNextChapter(async () => {
-    spinner.stopAndPersist();
     const nextPageHtml = await getHtml(nextPage);
     scrapeChapter(nextPage, nextPageHtml);
   });
