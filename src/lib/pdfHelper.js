@@ -8,23 +8,24 @@ async function generatePDF(pdfName, imagesPath) {
     info: { Author: 'StereoPT' },
   });
 
-  pdfName = pdfName.concat(".pdf");
+  const actualPdfName = pdfName.concat('.pdf');
   let pageWidth = 0;
-  let pageHeight = imagesPath.reduce((total, image) => {
-    let img = pdfDocument.openImage(image);
+  const pageHeight = imagesPath.reduce((total, image) => {
+    const img = pdfDocument.openImage(image);
     if(img.width >= pageWidth) pageWidth = Number(img.width);
 
-    return total + pdfDocument.openImage(image).height; 
+    return total + pdfDocument.openImage(image).height;
   }, 0);
-  
-  pdfDocument.pipe(fs.createWriteStream(path.join(__dirname, '..', '..', 'pdfs', pdfName)));
+
+  pdfDocument.pipe(fs.createWriteStream(path.join(__dirname, '..', '..', 'pdfs', actualPdfName)));
   pdfDocument.addPage({
-    size: [ pageWidth, pageHeight ],
-    margin: 0
+    size: [pageWidth, pageHeight],
+    margin: 0,
   });
 
-  for(let image of imagesPath) {
-    let pdfImage = pdfDocument.openImage(image);
+  // eslint-disable-next-line no-restricted-syntax
+  for(const image of imagesPath) {
+    const pdfImage = pdfDocument.openImage(image);
     pdfDocument.image(pdfImage, { align: 'center' });
   }
 
@@ -33,4 +34,4 @@ async function generatePDF(pdfName, imagesPath) {
 
 module.exports = {
   generatePDF,
-}
+};

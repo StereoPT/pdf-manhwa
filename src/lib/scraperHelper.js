@@ -9,7 +9,7 @@ async function getHtml(chapterUrl) {
 
 async function downloadImage(imgSrc, imgPath) {
   const response = await axios({ method: 'GET', url: imgSrc, responseType: 'stream' });
-  
+
   response.data.pipe(fs.createWriteStream(imgPath));
 
   return new Promise((resolve, reject) => {
@@ -24,11 +24,11 @@ async function downloadImage(imgSrc, imgPath) {
 
 function getNextChapter(callback) {
   const nextChapter = readLine.question('Download Next Chapter [Y/N]: ').toUpperCase();
-  if(nextChapter == 'Y') {
-    return callback();  
+  if(nextChapter === 'Y') {
+    return callback();
   }
-  
-  console.log('[PDF Manhwa] Finished!');
+
+  return console.log('[PDF Manhwa] Finished!');
 }
 
 module.exports = {

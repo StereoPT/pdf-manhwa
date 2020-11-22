@@ -1,4 +1,3 @@
-/* eslint-disable newline-per-chained-call */
 const ora = require('ora');
 const path = require('path');
 const cheerio = require('cheerio');
@@ -14,7 +13,7 @@ async function scrapeChapterPart($, mangaTitle) {
   imageObject.each((index, img) => {
     const imgSrc = img.attribs['data-src'].trim();
     const imgPadding = img.attribs.id;
-    const imgName = mangaTitle.concat('-').concat(imgPadding).concat('png');
+    const imgName = mangaTitle.concat('-', imgPadding, 'png');
     const imgPath = path.join(__dirname, '..', '..', 'images', imgName);
 
     imagesPath.push(imgPath);
@@ -56,4 +55,4 @@ module.exports = {
   },
 };
 
-// https://toonily.com/webtoon/solmis-channel/chapter-12/
+// https://toonily.com/webtoon/solmis-channel/chapter-0/

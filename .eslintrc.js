@@ -10,5 +10,10 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 12,
   },
-  rules: { },
+  rules: {
+    'no-console': 'off',
+    'newline-per-chained-call': 'off',
+    'no-await-in-loop': 'off',
+    'keyword-spacing': 'off',
+  },
 };
