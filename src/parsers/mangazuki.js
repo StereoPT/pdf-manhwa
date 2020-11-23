@@ -1,9 +1,10 @@
 const ora = require('ora');
 const path = require('path');
 const cheerio = require('cheerio');
+const { imagesFolder } = require('../config');
 const { generatePDF } = require('../lib/pdfHelper');
 const {
-  getHtml, downloadImage, removeImages, getNextChapter,
+  getHtml, downloadImage, removeImages, getNextChapter, createName,
 } = require('../lib/scraperHelper');
 
 async function scrapeChapterPart($, mangaTitle) {
@@ -16,7 +17,7 @@ async function scrapeChapterPart($, mangaTitle) {
     const imgSrc = img.attribs.src;
     const imgPadding = img.attribs['data-image-paged'];
     const imgName = mangaTitle.concat('-', imgPadding, '.png');
-    const imgPath = path.join(__dirname, '..', '..', 'images', imgName);
+    const imgPath = path.join(imagesFolder, imgName);
 
     imagesPath.push(imgPath);
     imagePromises.push(downloadImage(imgSrc, imgPath));
@@ -31,7 +32,7 @@ async function scrapeChapter(chapterUrl, html) {
   let imagesPath = [];
 
   let $ = cheerio.load(html);
-  const mangaTitle = $('meta[name="twitter:title"]').attr('content').split(' ').join('_');
+  const mangaTitle = createName($('meta[name="twitter:title"]').attr('content'));
   let nextPage;
   let searchNextPage;
 

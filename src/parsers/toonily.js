@@ -1,9 +1,10 @@
 const ora = require('ora');
 const path = require('path');
 const cheerio = require('cheerio');
+const { imagesFolder } = require('../config');
 const { generatePDF } = require('../lib/pdfHelper');
 const {
-  getHtml, downloadImage, removeImages, getNextChapter,
+  getHtml, downloadImage, removeImages, getNextChapter, createName,
 } = require('../lib/scraperHelper');
 
 async function scrapeChapterPart($, mangaTitle) {
@@ -16,7 +17,7 @@ async function scrapeChapterPart($, mangaTitle) {
     const imgSrc = img.attribs['data-src'].trim();
     const imgPadding = img.attribs.id;
     const imgName = mangaTitle.concat('-', imgPadding, '.png');
-    const imgPath = path.join(__dirname, '..', '..', 'images', imgName);
+    const imgPath = path.join(imagesFolder, imgName);
 
     imagesPath.push(imgPath);
     imagePromises.push(downloadImage(imgSrc, imgPath));
@@ -29,7 +30,7 @@ async function scrapeChapterPart($, mangaTitle) {
 
 async function scrapeChapter(chapterUrl, html) {
   const $ = cheerio.load(html);
-  const mangaTitle = $('#chapter-heading').text().replace('\'', '').split(' ').join('_');
+  const mangaTitle = createName($('#chapter-heading').text());
   const nextPage = $('.next_page').first().attr('href');
 
   console.log(` > Chapter: ${mangaTitle}`);
@@ -60,4 +61,4 @@ module.exports = {
   },
 };
 
-// https://toonily.com/webtoon/solmis-channel/chapter-3/
+// https://toonily.com/webtoon/solmis-channel/chapter-11/

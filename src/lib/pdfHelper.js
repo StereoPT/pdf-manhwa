@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const { pdfsFolder } = require('../config');
 
 async function generatePDF(pdfName, imagesPath) {
   const pdfDocument = new PDFDocument({
@@ -17,7 +18,7 @@ async function generatePDF(pdfName, imagesPath) {
     return total + pdfDocument.openImage(image).height;
   }, 0);
 
-  pdfDocument.pipe(fs.createWriteStream(path.join(__dirname, '..', '..', 'pdfs', actualPdfName)));
+  pdfDocument.pipe(fs.createWriteStream(path.join(pdfsFolder, actualPdfName)));
   pdfDocument.addPage({
     size: [pageWidth, pageHeight],
     margin: 0,
