@@ -1,4 +1,5 @@
 const readLine = require('readline-sync');
+const { getCommandLineArgs } = require('./lib/cli');
 
 const parserMap = new Map();
 const manhwaParsers = require('./parsers');
@@ -9,6 +10,8 @@ Object.keys(manhwaParsers).map((key) => {
   }
   return null;
 });
+
+let { url } = getCommandLineArgs(process.argv);
 
 console.log('[PDF Manhwa]');
 
@@ -28,5 +31,5 @@ async function GetChapter(chapterUrl) {
   }
 }
 
-const chapterUrl = readLine.question('Enter Chapter Url: ');
-GetChapter(chapterUrl);
+if(url === undefined) url = readLine.question('Enter Chapter Url: ');
+GetChapter(url);
