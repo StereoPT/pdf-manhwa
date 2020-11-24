@@ -15,5 +15,6 @@ module.exports = {
     'newline-per-chained-call': 'off',
     'no-await-in-loop': 'off',
     'keyword-spacing': 'off',
+    'no-use-before-define': 'off',
   },
 };

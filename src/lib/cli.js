@@ -14,9 +14,16 @@ const getCommandLineArgs = (processArgv) => yargs(processArgv)
     a: {
       alias: 'all',
       demandOption: false,
-      describe: 'Download all Chapters',
+      describe: 'Download All Chapters',
       type: 'boolean',
       default: false,
+    },
+    n: {
+      alias: 'amount',
+      demandOption: false,
+      describe: 'Amount of Chapters to Download',
+      type: 'integer',
+      default: 1,
     },
   }).argv;
 

@@ -30,6 +30,12 @@ async function scrapeChapterPart($, mangaTitle) {
 
 async function scrapeChapter(chapterUrl, html, args) {
   const { all } = args;
+  const { amount } = args;
+
+  if(amount <= 0) {
+    console.log('[PDF Manhwa] Finished!');
+    return;
+  }
 
   const $ = cheerio.load(html);
   const mangaTitle = createName($('#chapter-heading').text());
@@ -48,15 +54,21 @@ async function scrapeChapter(chapterUrl, html, args) {
   await removeImages(imagesPath);
   console.log('');
 
-  if(all === false) {
-    getNextChapter(async () => {
-      const nextPageHtml = await getHtml(nextPage);
-      scrapeChapter(nextPage, nextPageHtml, args);
-    });
+  if(all === false && amount === undefined) {
+    getNextChapter(() => downloadNextChapter(nextPage, args));
   } else {
-    const nextPageHtml = await getHtml(nextPage);
-    scrapeChapter(nextPage, nextPageHtml, args);
+    // Download All Chapters
+    const newArgs = { ...args };
+    if(amount !== undefined) {
+      newArgs.amount = amount - 1;
+    }
+    await downloadNextChapter(nextPage, newArgs);
   }
+}
+
+async function downloadNextChapter(nextPage, args) {
+  const nextPageHtml = await getHtml(nextPage);
+  scrapeChapter(nextPage, nextPageHtml, args);
 }
 
 module.exports = {
@@ -69,4 +81,4 @@ module.exports = {
   },
 };
 
-// https://toonily.com/webtoon/solmis-channel/chapter-17/
+// https://toonily.com/webtoon/solmis-channel/chapter-19/
