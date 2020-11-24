@@ -4,6 +4,7 @@ const { getCommandLineArgs } = require('./lib/cli');
 const parserMap = new Map();
 const manhwaParsers = require('./parsers');
 
+const args = getCommandLineArgs(process.argv);
 Object.keys(manhwaParsers).map((key) => {
   if (manhwaParsers[key].host !== undefined) {
     parserMap.set(manhwaParsers[key].host, manhwaParsers[key]);
@@ -11,7 +12,8 @@ Object.keys(manhwaParsers).map((key) => {
   return null;
 });
 
-let { url } = getCommandLineArgs(process.argv);
+let { url } = args;
+const { all } = args;
 
 console.log('[PDF Manhwa]');
 
@@ -25,7 +27,7 @@ async function GetChapter(chapterUrl) {
   }
 
   try {
-    parserMap.get(host).getChapter(chapterUrl);
+    parserMap.get(host).getChapter(chapterUrl, { all });
   } catch(error) {
     console.error(error);
   }

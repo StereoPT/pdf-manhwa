@@ -28,7 +28,8 @@ async function scrapeChapterPart($, mangaTitle) {
   return imagesPath;
 }
 
-async function scrapeChapter(chapterUrl, html) {
+async function scrapeChapter(chapterUrl, html, args) {
+  const { all } = args;
   let imagesPath = [];
 
   let $ = cheerio.load(html);
@@ -58,20 +59,26 @@ async function scrapeChapter(chapterUrl, html) {
   generatingSpinner.succeed('Generated!');
 
   await removeImages(imagesPath);
+  console.log('');
 
-  getNextChapter(async () => {
+  if(all === false) {
+    getNextChapter(async () => {
+      const nextPageHtml = await getHtml(nextPage);
+      scrapeChapter(nextPage, nextPageHtml, args);
+    });
+  } else {
     const nextPageHtml = await getHtml(nextPage);
-    scrapeChapter(nextPage, nextPageHtml);
-  });
+    scrapeChapter(nextPage, nextPageHtml, args);
+  }
 }
 
 module.exports = {
   name: 'Mangazuki',
   host: 'mangazuki.me',
   url: 'https://mangazuki.me/',
-  async getChapter(chapterUrl) {
+  async getChapter(chapterUrl, args) {
     const html = await getHtml(chapterUrl);
-    await scrapeChapter(chapterUrl, html);
+    await scrapeChapter(chapterUrl, html, args);
   },
 };
 

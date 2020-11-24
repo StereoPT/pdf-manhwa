@@ -28,7 +28,9 @@ async function scrapeChapterPart($, mangaTitle) {
   return imagesPath;
 }
 
-async function scrapeChapter(chapterUrl, html) {
+async function scrapeChapter(chapterUrl, html, args) {
+  const { all } = args;
+
   const $ = cheerio.load(html);
   const mangaTitle = createName($('#chapter-heading').text());
   const nextPage = $('.next_page').first().attr('href');
@@ -44,21 +46,27 @@ async function scrapeChapter(chapterUrl, html) {
   generatingSpinner.succeed('Generated!');
 
   await removeImages(imagesPath);
+  console.log('');
 
-  getNextChapter(async () => {
+  if(all === false) {
+    getNextChapter(async () => {
+      const nextPageHtml = await getHtml(nextPage);
+      scrapeChapter(nextPage, nextPageHtml, args);
+    });
+  } else {
     const nextPageHtml = await getHtml(nextPage);
-    scrapeChapter(nextPage, nextPageHtml);
-  });
+    scrapeChapter(nextPage, nextPageHtml, args);
+  }
 }
 
 module.exports = {
   name: 'Toonily',
   host: 'toonily.com',
   url: 'https://toonily.com/',
-  async getChapter(chapterUrl) {
+  async getChapter(chapterUrl, args) {
     const html = await getHtml(chapterUrl);
-    await scrapeChapter(chapterUrl, html);
+    await scrapeChapter(chapterUrl, html, args);
   },
 };
 
-// https://toonily.com/webtoon/solmis-channel/chapter-11/
+// https://toonily.com/webtoon/solmis-channel/chapter-17/

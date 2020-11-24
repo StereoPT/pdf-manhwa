@@ -1,7 +1,7 @@
 const path = require('path');
 
-const imagesFolder = path.join(process.cwd(), 'images');
-const pdfsFolder = path.join(process.cwd(), 'pdfs');
+const imagesFolder = path.join(__dirname, '..', 'images');
+const pdfsFolder = path.join(__dirname, '..', 'pdfs');
 
 module.exports = {
   imagesFolder,

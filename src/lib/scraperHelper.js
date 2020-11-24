@@ -31,7 +31,6 @@ async function removeImages(imagesPath) {
 }
 
 function getNextChapter(callback) {
-  console.log('');
   const nextChapter = readLine.question('Download Next Chapter [Y/N]: ').toUpperCase();
   if(nextChapter === 'Y') {
     return callback();
