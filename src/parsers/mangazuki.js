@@ -29,8 +29,13 @@ async function scrapeChapterPart($, mangaTitle) {
 }
 
 async function scrapeChapter(chapterUrl, html, args) {
-  const { all } = args;
+  const { all, amount, output } = args;
   let imagesPath = [];
+
+  if(amount <= 0) {
+    console.log('[PDF Manhwa] Finished!');
+    return;
+  }
 
   let $ = cheerio.load(html);
   const mangaTitle = createName($('meta[name="twitter:title"]').attr('content'));
@@ -55,21 +60,27 @@ async function scrapeChapter(chapterUrl, html, args) {
 
   const generatingSpinner = ora('Generating...').start();
   const pdfName = chapterUrl.split('/').pop();
-  await generatePDF(pdfName, imagesPath);
+  await generatePDF(pdfName, imagesPath, output);
   generatingSpinner.succeed('Generated!');
 
   await removeImages(imagesPath);
   console.log('');
 
-  if(all === false) {
-    getNextChapter(async () => {
-      const nextPageHtml = await getHtml(nextPage);
-      scrapeChapter(nextPage, nextPageHtml, args);
-    });
+  if(all === false && amount === undefined) {
+    getNextChapter(() => downloadNextChapter(nextPage, args));
   } else {
-    const nextPageHtml = await getHtml(nextPage);
-    scrapeChapter(nextPage, nextPageHtml, args);
+    // Download All Chapters
+    const newArgs = { ...args };
+    if(amount !== undefined) {
+      newArgs.amount = amount - 1;
+    }
+    await downloadNextChapter(nextPage, newArgs);
   }
+}
+
+async function downloadNextChapter(nextPage, args) {
+  const nextPageHtml = await getHtml(nextPage);
+  scrapeChapter(nextPage, nextPageHtml, args);
 }
 
 module.exports = {

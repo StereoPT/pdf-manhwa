@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Manhwa to PDF",
   "main": "src/app.js",
+  "bin": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
     "all": "node src/app.js --all",
@@ -22,7 +23,7 @@
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "nodemon": "^2.0.6"
+    "pkg": "^4.4.9"
   },
   "dependencies": {
     "axios": "^0.21.0",

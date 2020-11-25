@@ -17,7 +17,7 @@ async function scrapeChapterPart($, mangaTitle) {
     const imgSrc = img.attribs['data-src'].trim();
     const imgPadding = img.attribs.id;
     const imgName = mangaTitle.concat('-', imgPadding, '.png');
-    const imgPath = path.join(imagesFolder, imgName);
+    const imgPath = path.join(imagesFolder(), imgName);
 
     imagesPath.push(imgPath);
     imagePromises.push(downloadImage(imgSrc, imgPath));
@@ -29,8 +29,7 @@ async function scrapeChapterPart($, mangaTitle) {
 }
 
 async function scrapeChapter(chapterUrl, html, args) {
-  const { all } = args;
-  const { amount } = args;
+  const { all, amount, output } = args;
 
   if(amount <= 0) {
     console.log('[PDF Manhwa] Finished!');
@@ -48,7 +47,7 @@ async function scrapeChapter(chapterUrl, html, args) {
   downloadingSpinner.succeed('Downloaded!');
 
   const generatingSpinner = ora('Generating...').start();
-  await generatePDF(mangaTitle, imagesPath);
+  await generatePDF(mangaTitle, imagesPath, output);
   generatingSpinner.succeed('Generated!');
 
   await removeImages(imagesPath);
@@ -81,4 +80,4 @@ module.exports = {
   },
 };
 
-// https://toonily.com/webtoon/solmis-channel/chapter-19/
+// https://toonily.com/webtoon/solmis-channel/chapter-46/

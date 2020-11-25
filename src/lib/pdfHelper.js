@@ -3,7 +3,7 @@ const path = require('path');
 const PDFDocument = require('pdfkit');
 const { pdfsFolder } = require('../config');
 
-async function generatePDF(pdfName, imagesPath) {
+async function generatePDF(pdfName, imagesPath, output) {
   const pdfDocument = new PDFDocument({
     autoFirstPage: false,
     info: { Author: 'StereoPT' },
@@ -18,7 +18,11 @@ async function generatePDF(pdfName, imagesPath) {
     return total + pdfDocument.openImage(image).height;
   }, 0);
 
-  pdfDocument.pipe(fs.createWriteStream(path.join(pdfsFolder, actualPdfName)));
+  let pdfPath;
+  if(output !== undefined) pdfPath = path.join(output, actualPdfName);
+  else pdfPath = path.join(pdfsFolder(), actualPdfName);
+
+  pdfDocument.pipe(fs.createWriteStream(pdfPath));
   pdfDocument.addPage({
     size: [pageWidth, pageHeight],
     margin: 0,

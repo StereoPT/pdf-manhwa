@@ -13,7 +13,9 @@ Object.keys(manhwaParsers).map((key) => {
 });
 
 let { url } = args;
-const { all, amount } = args;
+const {
+  all, amount, output,
+} = args;
 
 console.log('[PDF Manhwa]');
 
@@ -27,7 +29,9 @@ async function GetChapter(chapterUrl) {
   }
 
   try {
-    parserMap.get(host).getChapter(chapterUrl, { all, amount });
+    parserMap.get(host).getChapter(chapterUrl, {
+      all, amount, output,
+    });
   } catch(error) {
     console.error(error);
   }

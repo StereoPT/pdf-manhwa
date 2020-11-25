@@ -1,9 +1,7 @@
 const yargs = require('yargs');
 
 const getCommandLineArgs = (processArgv) => yargs(processArgv)
-  .usage('Usage:\n'
-    + ' -u <manhwa chapter url>\n'
-    + ' -a <download all chapters>')
+  .usage('Usage: $0 <cmd> [args]')
   .option({
     u: {
       alias: 'url',
@@ -23,7 +21,12 @@ const getCommandLineArgs = (processArgv) => yargs(processArgv)
       demandOption: false,
       describe: 'Amount of Chapters to Download',
       type: 'integer',
-      default: 1,
+    },
+    o: {
+      alias: 'output',
+      demandOption: false,
+      describe: 'PDF Output Location',
+      type: 'string',
     },
   }).argv;
 
