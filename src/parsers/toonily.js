@@ -80,4 +80,4 @@ module.exports = {
   },
 };
 
-// https://toonily.com/webtoon/solmis-channel/chapter-46/
+// https://toonily.com/webtoon/solmis-channel/chapter-47/

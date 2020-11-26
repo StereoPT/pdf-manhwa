@@ -9,6 +9,15 @@
     "all": "node src/app.js --all",
     "lint": "eslint src/"
   },
+  "pkg": {
+    "assets": [
+      "**/node_modules/linebreak/src/classes.trie",
+      "**/node_modules/pdfkit/js/data/Helvetica.afm"
+    ],
+    "targets": [
+      "node12"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/StereoPT/pdf-manhwa.git"
@@ -22,13 +31,11 @@
   "devDependencies": {
     "eslint": "^7.14.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
-    "pkg": "^4.4.9"
+    "eslint-plugin-import": "^2.22.1"
   },
   "dependencies": {
     "axios": "^0.21.0",
     "cheerio": "^1.0.0-rc.3",
-    "image-size": "^0.9.3",
     "ora": "^5.1.0",
     "pdfkit": "^0.11.0",
     "readline-sync": "^1.4.10",

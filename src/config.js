@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const imagesFolder = () => {
-  let imagesDir = path.join(__dirname, '..', 'images');
+  let imagesDir = path.join(process.cwd(), 'images');
 
   if(!fs.existsSync(imagesDir)) imagesDir = os.tmpdir();
 
@@ -11,7 +11,7 @@ const imagesFolder = () => {
 };
 
 const pdfsFolder = () => {
-  const pdfsDir = path.join(__dirname, '..', 'pdfs');
+  const pdfsDir = path.join(process.cwd(), 'pdfs');
 
   if(!fs.existsSync(pdfsDir)) fs.mkdirSync(pdfsDir);
 
