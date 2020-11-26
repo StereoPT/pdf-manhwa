@@ -92,3 +92,6 @@ images/
 
 # PDF's
 pdfs/
+
+# Photoshop Files
+*.psd
