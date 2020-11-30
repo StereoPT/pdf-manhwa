@@ -80,4 +80,4 @@ module.exports = {
   },
 };
 
-// https://toonily.com/webtoon/solmis-channel/chapter-47/
+// https://toonily.com/webtoon/pheromone-holic-webtoon/chapter-6/

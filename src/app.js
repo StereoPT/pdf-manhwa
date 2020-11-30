@@ -3,6 +3,7 @@ const { getCommandLineArgs } = require('./lib/cli');
 
 const parserMap = new Map();
 const manhwaParsers = require('./parsers');
+const manhwaScraper = require('./lib/scraper');
 
 const args = getCommandLineArgs(process.argv);
 Object.keys(manhwaParsers).map((key) => {
@@ -13,9 +14,9 @@ Object.keys(manhwaParsers).map((key) => {
 });
 
 let { url } = args;
-const {
+/* const {
   all, amount, output,
-} = args;
+} = args; */
 
 console.log('[PDF Manhwa]');
 
@@ -29,9 +30,12 @@ async function GetChapter(chapterUrl) {
   }
 
   try {
-    parserMap.get(host).getChapter(chapterUrl, {
+    const parser = parserMap.get(host);
+    manhwaScraper.scrape(url, parser);
+
+    /* parserMap.get(host).getChapter(chapterUrl, {
       all, amount, output,
-    });
+    }); */
   } catch(error) {
     console.error(error);
   }
