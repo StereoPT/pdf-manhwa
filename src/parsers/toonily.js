@@ -33,4 +33,4 @@ module.exports = {
   },
 };
 
-// https://toonily.com/webtoon/pheromone-holic-webtoon/chapter-27/
+// https://toonily.com/webtoon/pheromone-holic-webtoon/chapter-28/

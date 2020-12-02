@@ -1,3 +1,4 @@
+const ora = require('ora');
 const cheerio = require('cheerio');
 const sanitizeFilename = require('sanitize-filename');
 const { generatePDF } = require('./pdfHelper');
@@ -45,22 +46,19 @@ async function scrapeChapter(chapterUrl, parser, args) {
   console.log(` > Chapter: ${manhwaTitle}`);
 
   // Scrape Chapter Part
-  // TODO: Setup Download ora spinner
-  // const downloadingSpinner = ora('Downloading...').start();
+  const downloadingSpinner = ora('Downloading...').start();
   const { imagesPath, nextPageUrl } = await scrapeChapterParts(parser, $, manhwaTitle, chapterUrl);
-  // downloadingSpinner.succeed('Downloaded!');
+  downloadingSpinner.succeed('Downloaded!');
 
   // Generate PDF
-  // TODO: Setup Generate ora spinner
-  // const generatingSpinner = ora('Generating...').start();
+  const generatingSpinner = ora('Generating...').start();
   await generatePDF(manhwaTitle, imagesPath, output);
-  // generatingSpinner.succeed('Generated!');
+  generatingSpinner.succeed('Generated!');
 
   // Remove Images
-  // TODO: Setup Remove ora spinner
-  // const generatingSpinner = ora('Generating...').start();
+  const removingSpinner = ora('Removing...').start();
   await removeImages(imagesPath);
-  // generatingSpinner.succeed('Generated!');
+  removingSpinner.succeed('Removed!');
 
   if(all === false && amount === undefined) {
     getNextChapter(() => scrapeChapter(nextPageUrl, parser, args));
