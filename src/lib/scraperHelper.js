@@ -1,7 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
 const readLine = require('readline-sync');
-const sanitizeFilename = require('sanitize-filename');
 
 async function getHtml(chapterUrl) {
   const { data: html } = await axios.get(chapterUrl);
@@ -39,16 +38,9 @@ function getNextChapter(callback) {
   return console.log('[PDF Manhwa] Finished!');
 }
 
-function createName(htmlText) {
-  const name = sanitizeFilename(htmlText);
-  console.log(name);
-  return name;
-}
-
 module.exports = {
   getHtml,
   downloadImage,
   removeImages,
   getNextChapter,
-  createName,
 };
