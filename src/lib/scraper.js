@@ -14,9 +14,9 @@ async function scrapeChapterPart(parser, $, mangaTitle) {
 
   const imageObject = await parser.getImages($);
 
-  imageObject.each(async (index, img) => {
-    const imgSrc = await parser.getImageSrc(img);
-    const imgPadding = await parser.getImagePadding(img);
+  imageObject.each((index, img) => {
+    const imgSrc = parser.getImageSrc(img);
+    const imgPadding = parser.getImagePadding(img);
     const imgName = mangaTitle.concat('-', imgPadding, '.png');
     const imgPath = path.join(imagesFolder(), imgName);
 
@@ -34,7 +34,7 @@ async function scrapeChapterParts(parser, $, manhwaTitle, currentUrl) {
   let nextPageUrl;
 
   do {
-    const chapterImagesPath = await scrapeChapterPart($$, manhwaTitle);
+    const chapterImagesPath = await scrapeChapterPart(parser, $$, manhwaTitle);
     imagesPath = [...imagesPath, ...chapterImagesPath];
 
     nextPageUrl = await parser.getNextPage($$);

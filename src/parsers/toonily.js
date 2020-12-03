@@ -11,12 +11,12 @@ module.exports = {
   async getImages($) {
     return $('.wp-manga-chapter-img');
   },
-  async getImageSrc(img) {
+  getImageSrc(img) {
     return img.attribs['data-src'].trim();
   },
-  async getImagePadding(img) {
+  getImagePadding(img) {
     return img.attribs.id;
   },
 };
 
-// https://toonily.com/webtoon/pheromone-holic-webtoon/chapter-28/
+// https://toonily.com/webtoon/pheromone-holic-webtoon/chapter-32/

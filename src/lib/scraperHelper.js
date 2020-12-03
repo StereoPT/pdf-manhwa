@@ -28,9 +28,7 @@ async function downloadImage(imgSrc, imgPath) {
       });
     });
   } catch(error) {
-    const { response } = error;
-    const { request, ...errorObject } = response;
-    throw new Error(errorObject);
+    throw new Error(error);
   }
 }
 

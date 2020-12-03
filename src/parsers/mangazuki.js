@@ -12,10 +12,10 @@ module.exports = {
   async getImages($) {
     return $('.wp-manga-chapter-img');
   },
-  async getImageSrc(img) {
+  getImageSrc(img) {
     return img.attribs.src;
   },
-  async getImagePadding(img) {
+  getImagePadding(img) {
     return img.attribs['data-image-paged'];
   },
 };
