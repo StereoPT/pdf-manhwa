@@ -3,23 +3,35 @@ const axios = require('axios');
 const readLine = require('readline-sync');
 
 async function getHtml(chapterUrl) {
-  const { data: html } = await axios.get(chapterUrl);
-  return html;
+  try {
+    const { data: html } = await axios.get(chapterUrl);
+    return html;
+  } catch(error) {
+    const { response } = error;
+    const { request, ...errorObject } = response;
+    throw new Error(errorObject);
+  }
 }
 
 async function downloadImage(imgSrc, imgPath) {
-  const response = await axios({ method: 'GET', url: imgSrc, responseType: 'stream' });
+  try {
+    const response = await axios({ method: 'GET', url: imgSrc, responseType: 'stream' });
 
-  response.data.pipe(fs.createWriteStream(imgPath));
+    response.data.pipe(fs.createWriteStream(imgPath));
 
-  return new Promise((resolve, reject) => {
-    response.data.on('end', () => {
-      resolve();
+    return new Promise((resolve, reject) => {
+      response.data.on('end', () => {
+        resolve();
+      });
+      response.data.on('error', (e) => {
+        reject(e);
+      });
     });
-    response.data.on('error', (e) => {
-      reject(e);
-    });
-  });
+  } catch(error) {
+    const { response } = error;
+    const { request, ...errorObject } = response;
+    throw new Error(errorObject);
+  }
 }
 
 async function removeImages(imagesPath) {
