@@ -1,8 +1,32 @@
 const ora = require('ora');
+const path = require('path');
 const cheerio = require('cheerio');
 const sanitizeFilename = require('sanitize-filename');
+const { imagesFolder } = require('../config');
 const { generatePDF } = require('./pdfHelper');
-const { getHtml, removeImages, getNextChapter } = require('./scraperHelper');
+const {
+  getHtml, removeImages, getNextChapter, downloadImage,
+} = require('./scraperHelper');
+
+async function scrapeChapterPart(parser, $, mangaTitle) {
+  const imagePromises = [];
+  const imagesPath = [];
+
+  const imageObject = await parser.getImages($);
+
+  imageObject.each(async (index, img) => {
+    const imgSrc = await parser.getImageSrc(img);
+    const imgPadding = await parser.getImagePadding(img);
+    const imgName = mangaTitle.concat('-', imgPadding, '.png');
+    const imgPath = path.join(imagesFolder(), imgName);
+
+    imagesPath.push(imgPath);
+    imagePromises.push(downloadImage(imgSrc, imgPath));
+  });
+
+  await Promise.all(imagePromises);
+  return imagesPath;
+}
 
 async function scrapeChapterParts(parser, $, manhwaTitle, currentUrl) {
   let imagesPath = [];
@@ -10,7 +34,7 @@ async function scrapeChapterParts(parser, $, manhwaTitle, currentUrl) {
   let nextPageUrl;
 
   do {
-    const chapterImagesPath = await parser.scrapeChapterPart($$, manhwaTitle);
+    const chapterImagesPath = await scrapeChapterPart($$, manhwaTitle);
     imagesPath = [...imagesPath, ...chapterImagesPath];
 
     nextPageUrl = await parser.getNextPage($$);
