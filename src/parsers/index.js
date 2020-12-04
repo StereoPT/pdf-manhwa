@@ -1,11 +1,11 @@
 const mangazuki = require('./mangazuki');
 const toonily = require('./toonily');
+const manhwaclub = require('./manhwaclub');
 
 module.exports = {
   Mangazuki: mangazuki,
   Toonily: toonily,
-  // MangaDex: require('./mangadex'),
-  // ManhwaClub: require('./manhwaclub'),
+  ManhwaClub: manhwaclub,
   // ReadManhwa: require('./readmanhwa'),
   // ManhwaTime: require('./manhwatime'),
   // ToonPoint: require('./toonpoint'),
